@@ -43,7 +43,7 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout -b sources
           git add .
-          git commit -m "${{ env.TAG_NAME }}"
+          git commit -m "test"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f origin sources
 
