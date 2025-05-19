@@ -1,0 +1,54 @@
+name: Publish database
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 0 * * 4,6
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Prepare directory
+        run: |
+          mkdir -p sources
+          cd sources
+
+      - name: Get GeoLite2Country DB
+        run: |
+          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-Country.mmdb"
+
+      - name: Get GeoLite2ASN DB
+        run: |
+          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-ASN.mmdb"
+
+      - name: Get IPFire DB
+        run: |
+          wget -qO- "https://location.ipfire.org/databases/1/location.db.xz" | unxz
+
+      - name: Get IP2LocationCountry DB
+        run: |
+          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBIN" | bsdtar x "IP2LOCATION-LITE-DB1.BIN"
+
+      - name: Get IP2LocationASN DB
+        run: |
+          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBIN" | bsdtar x "IP2LOCATION-LITE-ASN.BIN"
+
+      - name: Push DBs to "sources" branch
+        run: |
+          git init
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git checkout -b sources
+          git add .
+          git commit -m "${{ env.TAG_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f origin sources
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          retain_days: 0
+          keep_minimum_runs: 3
