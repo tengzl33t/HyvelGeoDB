@@ -2,7 +2,7 @@ name: Cleanup
 
 on:
   schedule:
-    - cron: "0 15 * * *"
+    - cron: 0 15 * * *
 
 permissions:
   contents: write # only for delete-branch option
