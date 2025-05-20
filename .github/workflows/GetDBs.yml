@@ -41,11 +41,12 @@ jobs:
           git init
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git checkout -b sources
-          git add .
-          git commit -m "test"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f origin sources
+          git checkout sources 2>/dev/null || git checkout -b sources
+          git pull
+          git add .
+          git commit -m "update_$(date +"%Y.%m.%d")"
+          git push origin sources
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
