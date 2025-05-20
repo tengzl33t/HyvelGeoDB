@@ -44,9 +44,3 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git commit -a -m "update_$(date +"%Y.%m.%d")"
           git push
-
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@v2.0.6
-        with:
-          retain_days: 30
-          keep_minimum_runs: 5
