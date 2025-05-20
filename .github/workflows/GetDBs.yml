@@ -11,11 +11,6 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Prepare directory
-        run: |
-          mkdir -p sources
-          cd sources
-
       - name: Get GeoLite2Country DB
         run: |
           wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-Country.mmdb"
@@ -42,8 +37,8 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git checkout sources 2>/dev/null || git checkout -b sources
           git pull
+          git checkout sources 2>/dev/null || git checkout -b sources
           git add .
           git commit -m "update_$(date +"%Y.%m.%d")"
           git push origin sources
