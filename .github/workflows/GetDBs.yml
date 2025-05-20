@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: 0 0 * * 4,6
 
+permissions:
+  contents: write
+
 jobs:
   get-dbs:
     name: GetDBs
@@ -12,6 +15,9 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
 #      - name: Get GeoLite2Country DB
 #        run: |
 #          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-Country.mmdb"
@@ -32,17 +38,10 @@ jobs:
 #        run: |
 #          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.GEOLITE2DB_LICENSEKEY }}&file=DBASNLITEBIN" | jar x "IP2LOCATION-LITE-ASN.BIN"
 
-      - name: Push DBs to "sources" branch
-        run: |
-          git init -b main
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git pull
-          git checkout sources 2>/dev/null || git checkout -b sources
-          git add .
-          git commit -m "update_$(date +"%Y.%m.%d")"
-          git push -u origin sources
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: update_$(date +"%Y.%m.%d")
+          branch: sources
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
