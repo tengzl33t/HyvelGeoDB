@@ -42,7 +42,7 @@ jobs:
           git checkout sources 2>/dev/null || git checkout -b sources
           git add .
           git commit -m "update_$(date +"%Y.%m.%d")"
-          git push origin sources
+          git push -u origin sources
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
