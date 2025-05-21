@@ -26,7 +26,7 @@ jobs:
 
       - name: Get GeoLite2ASN DB
         run: |
-          wget -qO- GeoLite2ASN.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+          wget -qO "GeoLite2ASN.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
           unzip -j "GeoLite2ASN.zip" "*/GeoLite2-ASN-Blocks-IPv4.csv" "*/GeoLite2-ASN-Blocks-IPv6.csv"
           rm "GeoLite2ASN.zip"
 
