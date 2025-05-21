@@ -26,7 +26,7 @@ jobs:
 
       - name: Get IP2LocationASN DB
         run: |
-          wget -qO "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITECSV"
+          wget -qO "IP2LASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITECSV"
           unzip -j "IP2LASN.zip" "IP2LOCATION-LITE-ASN.CSV"
           rm "IP2LASN.zip"
 
