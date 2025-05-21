@@ -20,16 +20,20 @@ jobs:
 
       - name: Get GeoLite2Country DB
         run: |
-          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-Country.mmdb"
+          wget -qO "GeoLite2Country.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+          unzip -j "GeoLite2Country.zip" "*/GeoLite2-Country-Blocks-IPv4.csv" "*/GeoLite2-Country-Blocks-IPv6.csv" "*/GeoLite2-Country-Locations-en.csv"
+          rm "GeoLite2Country.zip"
 
       - name: Get GeoLite2ASN DB
         run: |
-          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-ASN.mmdb"
+          wget -qO- GeoLite2ASN.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+          unzip -j "GeoLite2ASN.zip" "*/GeoLite2-ASN-Blocks-IPv4.csv" "*/GeoLite2-ASN-Blocks-IPv6.csv"
+          rm "GeoLite2ASN.zip"
 
       - name: Commit changes
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add GeoLite2-Country.mmdb GeoLite2-ASN.mmdb
+          git add GeoLite2-ASN-Blocks-IPv4.csv GeoLite2-ASN-Blocks-IPv6.csv GeoLite2-Country-Blocks-IPv4.csv GeoLite2-Country-Blocks-IPv6.csv GeoLite2-Country-Locations-en.csv
           git commit -a -m "update_$(date +"%Y.%m.%d")"
           git push
