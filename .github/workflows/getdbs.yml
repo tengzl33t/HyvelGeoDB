@@ -32,11 +32,11 @@ jobs:
 
       - name: Get IP2LocationCountry DB
         run: |
-          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.GEOLITE2DB_LICENSEKEY }}&file=DB1LITEBIN" | jar x "IP2LOCATION-LITE-DB1.BIN"
+          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBIN" | jar x "IP2LOCATION-LITE-DB1.BIN"
 
       - name: Get IP2LocationASN DB
         run: |
-          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.GEOLITE2DB_LICENSEKEY }}&file=DBASNLITEBIN" | jar x "IP2LOCATION-LITE-ASN.BIN"
+          wget -qO- "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBIN" | jar x "IP2LOCATION-LITE-ASN.BIN"
 
       - name: Commit changes
         run: |
