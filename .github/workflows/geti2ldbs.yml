@@ -1,34 +1,22 @@
-name: Get DBs
+name: Get IP2LocationDBs
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: 0 0 * * 4,6
+    - cron: 0 6 5 * *
 
 permissions:
   contents: write
   actions: write
 
 jobs:
-  get-dbs:
+  get-i2l-dbs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: sources
-
-      - name: Get GeoLite2Country DB
-        run: |
-          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-Country.mmdb"
-
-      - name: Get GeoLite2ASN DB
-        run: |
-          wget -qO- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=tar.gz" | tar zx --strip-components=1 --wildcards "*/GeoLite2-ASN.mmdb"
-
-      - name: Get IPFire DB
-        run: |
-          wget -qO- "https://location.ipfire.org/databases/1/location.db.xz" | unxz > IPFire.db
 
       - name: Get IP2LocationCountry DB
         run: |
