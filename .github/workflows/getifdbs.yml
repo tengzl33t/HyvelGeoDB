@@ -1,16 +1,16 @@
-name: Get IPFireDBs
+name: Get IPFire DBs
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: 0 4 * * *
+    - cron: 0 3 * * *
 
 permissions:
   contents: write
   actions: write
 
 jobs:
-  get-if-dbs:
+  get-ipf-dbs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,12 +20,12 @@ jobs:
 
       - name: Get IPFire DB
         run: |
-          wget -qO- "https://location.ipfire.org/databases/1/location.db.xz" | unxz > IPFire.db
+          wget -qO "IPFire.db.xz" "https://location.ipfire.org/databases/1/location.db.xz"
 
       - name: Commit changes
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add IPFire.db
+          git add IPFire.db.xz
           git commit -a -m "update_$(date +"%Y.%m.%d")"
           git push

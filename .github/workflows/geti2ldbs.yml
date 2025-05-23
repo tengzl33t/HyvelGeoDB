@@ -1,9 +1,9 @@
-name: Get IP2LocationDBs
+name: Get IP2Location DBs
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: 0 6 5 * *
+    - cron: 0 2 5 * *
 
 permissions:
   contents: write
@@ -18,22 +18,26 @@ jobs:
         with:
           ref: sources
 
-      - name: Get IP2LocationCountry DB
+      - name: Get IP2Location Country IPv4 DB
         run: |
-          wget -qO "IP2LCountry.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITECSV"
-          unzip -j "IP2LCountry.zip" "IP2LOCATION-LITE-DB1.CSV"
-          rm "IP2LCountry.zip"
+          wget -qO "IP2LIPv4Country.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBIN"
 
-      - name: Get IP2LocationASN DB
+      - name: Get IP2Location Country IPv6 DB
         run: |
-          wget -qO "IP2LASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITECSV"
-          unzip -j "IP2LASN.zip" "IP2LOCATION-LITE-ASN.CSV"
-          rm "IP2LASN.zip"
+          wget -qO "IP2LIPv6Country.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBINIPV6"
+
+      - name: Get IP2Location ASN IPv4 DB
+        run: |
+          wget -qO "IP2LIPv4ASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBIN"
+
+      - name: Get IP2Location ASN IPv6 DB
+        run: |
+          wget -qO "IP2LIPv6ASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBINIPV6"
 
       - name: Commit changes
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add IP2LOCATION-LITE-DB1.CSV IP2LOCATION-LITE-ASN.CSV
+          git add IP2LIPv4Country.zip IP2LIPv6Country.zip IP2LIPv4ASN.zip IP2LIPv6ASN.zip
           git commit -a -m "update_$(date +"%Y.%m.%d")"
           git push
