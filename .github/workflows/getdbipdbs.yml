@@ -1,0 +1,35 @@
+name: Get DBIP DBs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 1 5 * *
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  get-dbip-dbs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: sources
+
+      - name: Get DBIP Country DB
+        run: |
+          wget -qO "DBIPCountry.mmdb.gz" "https://download.db-ip.com/free/dbip-country-lite-2025-05.mmdb.gz"
+
+      - name: Get DBIP ASN DB
+        run: |
+          wget -qO "DBIPASN.mmdb.gz" "https://download.db-ip.com/free/dbip-asn-lite-2025-05.mmdb.gz"
+
+      - name: Commit changes
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add DBIPCountry.mmdb.gz DBIPASN.mmdb.gz
+          git commit -a -m "update_$(date +"%Y.%m.%d")"
+          git push
