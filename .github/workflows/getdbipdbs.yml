@@ -20,11 +20,11 @@ jobs:
 
       - name: Get DBIP Country DB
         run: |
-          wget -qO "sourcedbs/DBIPCountry.mmdb.gz" "https://download.db-ip.com/free/dbip-country-lite-2025-05.mmdb.gz"
+          wget -qO "sourcedbs/DBIPCountry.mmdb.gz" "https://download.db-ip.com/free/dbip-country-lite-$(date +"%Y-%m").mmdb.gz"
 
       - name: Get DBIP ASN DB
         run: |
-          wget -qO "sourcedbs/DBIPASN.mmdb.gz" "https://download.db-ip.com/free/dbip-asn-lite-2025-05.mmdb.gz"
+          wget -qO "sourcedbs/DBIPASN.mmdb.gz" "https://download.db-ip.com/free/dbip-asn-lite-$(date +"%Y-%m").mmdb.gz"
 
       - name: Commit changes
         run: |
