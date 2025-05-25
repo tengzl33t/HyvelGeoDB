@@ -21,13 +21,13 @@ jobs:
       - name: Get IP2Location Country DB
         run: |
           wget -qO "IP2LCountry.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEMMDB"
-          unzip -jcq "IP2LCountry.zip" "IP2LOCATION-LITE-DB1.MMDB" | gzip > "sourcedbs/IP2LOCATION-LITE-DB1.MMDB.gz"
+          unzip -jcq "IP2LCountry.zip" "IP2LOCATION-LITE-DB1.MMDB" | gzip > "sourcedbs/IP2LocationCountry.MMDB.gz"
           rm "IP2LCountry.zip"
 
       - name: Get IP2Location ASN DB
         run: |
           wget -qO "IP2LASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEMMDB"
-          unzip -jcq "IP2LASN.zip" "IP2LOCATION-LITE-ASN.MMDB" | gzip > "sourcedbs/IP2LOCATION-LITE-ASN.MMDB.gz"
+          unzip -jcq "IP2LASN.zip" "IP2LOCATION-LITE-ASN.MMDB" | gzip > "sourcedbs/IP2LocationASN.MMDB.gz"
           rm "IP2LASN.zip"
 
       - name: Commit changes
