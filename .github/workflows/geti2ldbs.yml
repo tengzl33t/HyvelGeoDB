@@ -21,13 +21,13 @@ jobs:
       - name: Get IP2Location Country DB
         run: |
           wget -qO "IP2LCountry.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEMMDB"
-          unzip -jcq "IP2LCountry.zip" "IP2LOCATION-LITE-DB1.MMDB" | gzip > "sourcedbs/IP2LocationCountry.MMDB.gz"
+          unzip -jcq "IP2LCountry.zip" "IP2LOCATION-LITE-DB1.MMDB" | gzip > "sourcedbs/IP2Location-Country.MMDB.gz"
           rm "IP2LCountry.zip"
 
       - name: Get IP2Location ASN DB
         run: |
           wget -qO "IP2LASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEMMDB"
-          unzip -jcq "IP2LASN.zip" "IP2LOCATION-LITE-ASN.MMDB" | gzip > "sourcedbs/IP2LocationASN.MMDB.gz"
+          unzip -jcq "IP2LASN.zip" "IP2LOCATION-LITE-ASN.MMDB" | gzip > "sourcedbs/IP2Location-ASN.MMDB.gz"
           rm "IP2LASN.zip"
 
       - name: Commit changes
@@ -35,7 +35,7 @@ jobs:
           if [[ `git status --porcelain` ]]; then
             git config user.name "${{ github.actor }}"
             git config user.email "${{ github.actor }}@users.noreply.github.com"
-            git add sourcedbs/IP2LocationCountry.gz sourcedbs/IP2LocationASN.MMDB.gz
+            git add sourcedbs/IP2Location-Country.gz sourcedbs/IP2Location-ASN.MMDB.gz
             git commit -a -m "update_$(date +"%Y.%m.%d")"
             git push
           else

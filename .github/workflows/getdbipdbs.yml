@@ -20,18 +20,18 @@ jobs:
 
       - name: Get DBIP Country DB
         run: |
-          wget -qO "sourcedbs/DBIPCountry.mmdb.gz" "https://download.db-ip.com/free/dbip-country-lite-$(date +"%Y-%m").mmdb.gz"
+          wget -qO "sourcedbs/DBIP-Country.mmdb.gz" "https://download.db-ip.com/free/dbip-country-lite-$(date +"%Y-%m").mmdb.gz"
 
       - name: Get DBIP ASN DB
         run: |
-          wget -qO "sourcedbs/DBIPASN.mmdb.gz" "https://download.db-ip.com/free/dbip-asn-lite-$(date +"%Y-%m").mmdb.gz"
+          wget -qO "sourcedbs/DBIP-ASN.mmdb.gz" "https://download.db-ip.com/free/dbip-asn-lite-$(date +"%Y-%m").mmdb.gz"
 
       - name: Commit changes
         run: |
           if [[ `git status --porcelain` ]]; then
             git config user.name "${{ github.actor }}"
             git config user.email "${{ github.actor }}@users.noreply.github.com"
-            git add sourcedbs/DBIPCountry.mmdb.gz sourcedbs/DBIPASN.mmdb.gz
+            git add sourcedbs/DBIP-Country.mmdb.gz sourcedbs/DBIP-ASN.mmdb.gz
             git commit -a -m "update_$(date +"%Y.%m.%d")"
             git push
           else

@@ -20,18 +20,18 @@ jobs:
 
       - name: Get GeoLite2 Country DB
         run: |
-          wget -qO "sourcedbs/GeoLite2Country.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+          wget -qO "sourcedbs/GeoLite2-Country.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
 
       - name: Get GeoLite2 ASN DB
         run: |
-          wget -qO "sourcedbs/GeoLite2ASN.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+          wget -qO "sourcedbs/GeoLite2-ASN.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
 
       - name: Commit changes
         run: |
           if [[ `git status --porcelain` ]]; then
             git config user.name "${{ github.actor }}"
             git config user.email "${{ github.actor }}@users.noreply.github.com"
-            git add sourcedbs/GeoLite2Country.zip sourcedbs/GeoLite2ASN.zip
+            git add sourcedbs/GeoLite2-Country.zip sourcedbs/GeoLite2-ASN.zip
             git commit -a -m "update_$(date +"%Y.%m.%d")"
             git push
           else
