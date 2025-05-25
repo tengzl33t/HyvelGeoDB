@@ -20,26 +20,34 @@ jobs:
 
       - name: Get IP2Location Country IPv4 DB
         run: |
-          wget -qO "sourcedbs/IP2LIPv4Country.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBIN"
+          wget -qO "IP2LIPv4Country.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBIN"
+          unzip -jcq "IP2LIPv4Country.zip" "IP2LOCATION-LITE-DB1.BIN" | gzip > "sourcedbs/IP2LOCATION-LITE-DB1.BIN.gz"
+          rm "IP2LIPv4Country.zip"
 
       - name: Get IP2Location Country IPv6 DB
         run: |
-          wget -qO "sourcedbs/IP2LIPv6Country.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBINIPV6"
+          wget -qO "IP2LIPv6Country.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEBINIPV6"
+          unzip -jcq "IP2LIPv6Country.zip" "IP2LOCATION-LITE-DB1.IPV6.BIN" | gzip > "sourcedbs/IP2LOCATION-LITE-DB1.IPV6.BIN.gz"
+          rm "IP2LIPv6Country.zip"
 
       - name: Get IP2Location ASN IPv4 DB
         run: |
-          wget -qO "sourcedbs/IP2LIPv4ASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBIN"
+          wget -qO "IP2LIPv4ASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBIN"
+          unzip -jcq "IP2LIPv4ASN.zip" "IP2LOCATION-LITE-ASN.BIN" | gzip > "sourcedbs/IP2LOCATION-LITE-ASN.BIN.gz"
+          rm "IP2LIPv4ASN.zip"
 
       - name: Get IP2Location ASN IPv6 DB
         run: |
-          wget -qO "sourcedbs/IP2LIPv6ASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBINIPV6"
+          wget -qO "IP2LIPv6ASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEBINIPV6"
+          unzip -jcq "IP2LIPv6ASN.zip" "IP2LOCATION-LITE-ASN.IPV6.BIN" | gzip > "sourcedbs/IP2LOCATION-LITE-ASN.IPV6.BIN.gz"
+          rm "IP2LIPv6ASN.zip"
 
       - name: Commit changes
         run: |
           if [[ `git status --porcelain` ]]; then
             git config user.name "${{ github.actor }}"
             git config user.email "${{ github.actor }}@users.noreply.github.com"
-            git add sourcedbs/IP2LIPv4Country.zip sourcedbs/IP2LIPv6Country.zip sourcedbs/IP2LIPv4ASN.zip sourcedbs/IP2LIPv6ASN.zip
+            git add sourcedbs/IP2LOCATION-LITE-DB1.BIN.gz sourcedbs/IP2LOCATION-LITE-DB1.IPV6.BIN.gz sourcedbs/IP2LOCATION-LITE-ASN.BIN.gz sourcedbs/IP2LOCATION-LITE-ASN.IPV6.BIN.gz
             git commit -a -m "update_$(date +"%Y.%m.%d")"
             git push
           else
