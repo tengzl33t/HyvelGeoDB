@@ -1,0 +1,35 @@
+name: Get IPInfo DBs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 6 * * *
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  get-ipinfo-dbs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: sources
+
+      - name: Get IPInfo DB
+        run: |
+          wget -qO- "https://ipinfo.io/data/ipinfo_lite.mmdb?token=${{ secrets.IPINFO_TOKEN }}" | gzip > "sourcedbs/IPInfo.mmdb.gz"
+
+      - name: Commit changes
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            git config user.name "${{ github.actor }}"
+            git config user.email "${{ github.actor }}@users.noreply.github.com"
+            git add sourcedbs/IPInfo.mmdb.gz
+            git commit -a -m "update_$(date +"%Y.%m.%d")"
+            git push
+          else
+            echo "No changes were detected."
+          fi
