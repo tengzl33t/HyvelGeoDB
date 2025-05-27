@@ -20,8 +20,8 @@ import (
 	"strings"
 )
 
-func getLangLocations(langPaths []*zip.File) (map[int]internal.LocationStruct, map[string]int) {
-	countries := make(map[int]internal.LocationStruct)
+func getLangLocations(langPaths []*zip.File) (map[int]mmdbtype.Map, map[string]int) {
+	countries := make(map[int]mmdbtype.Map)
 	countriesAssignMap := make(map[string]int)
 
 	for _, langPath := range langPaths {
@@ -40,21 +40,20 @@ func getLangLocations(langPaths []*zip.File) (map[int]internal.LocationStruct, m
 			gotGeoNameID, err := strconv.Atoi(record[0])
 
 			if _, ok := countries[gotGeoNameID]; !ok {
-				countries[gotGeoNameID] = internal.LocationStruct{
-					Code: record[4],
-					Names: map[string]string{
-						record[1]: record[5],
+				countries[gotGeoNameID] = mmdbtype.Map{
+					"geoname_id": mmdbtype.Uint32(gotGeoNameID),
+					"iso_code":   mmdbtype.String(record[4]),
+					"names": mmdbtype.Map{
+						mmdbtype.String(record[1]): mmdbtype.String(record[5]),
 					},
 				}
+				countriesAssignMap[record[4]] = gotGeoNameID
 			} else {
-				countries[gotGeoNameID].Names[record[1]] = record[5]
+				countries[gotGeoNameID]["names"].(mmdbtype.Map)[mmdbtype.String(record[1])] = mmdbtype.String(record[5])
 			}
+
 		}
 		langDB.Close()
-	}
-
-	for key, value := range countries {
-		countriesAssignMap[value.Code] = key
 	}
 
 	return countries, countriesAssignMap
@@ -247,7 +246,9 @@ func collectDBCountries(countryDBs map[string]internal.DBStruct) {
 
 	for key, value := range CSVIPRanges {
 		locationResults := make(map[string]int)
-		locationResults[countries[value].Code] = countryDBs["GeoLite2"].Priority
+		gotISOCode := string(countries[value]["iso_code"].(mmdbtype.String))
+
+		locationResults[gotISOCode] = countryDBs["GeoLite2"].Priority
 		firstNetIP := net.ParseIP(key.Addr().String())
 		counter++
 
@@ -289,22 +290,8 @@ func collectDBCountries(countryDBs map[string]internal.DBStruct) {
 		gotCountry := getMaxInMap(locationResults)
 		countryGeoID := countryMap[gotCountry]
 
-		newMap := mmdbtype.Map{}
-
-		for k, v := range countries[countryGeoID].Names {
-			newMap[mmdbtype.String(k)] = mmdbtype.String(v)
-		}
-
-		record := mmdbtype.Map{
-			"country": mmdbtype.Map{
-				"geoname_id": mmdbtype.Uint32(countryGeoID),
-				"iso_code":   mmdbtype.String(gotCountry),
-				"names":      newMap,
-			},
-		}
-
 		_, ipnet, _ := net.ParseCIDR(key.String())
-		err = writer.Insert(ipnet, record)
+		err = writer.Insert(ipnet, countries[countryGeoID])
 		if err != nil {
 			log.Println(err)
 		}
