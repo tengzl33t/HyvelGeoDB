@@ -61,14 +61,6 @@ func GetDBStructs() map[string]DBStruct {
 	}
 }
 
-func GetInterfaceSlice[P any](slice []P) []any {
-	anys := make([]any, 0, len(slice))
-	for _, v := range slice {
-		anys = append(anys, v)
-	}
-	return anys
-}
-
 func GetContinentCodes() []string {
 	return []string{"AF", "AN", "AS", "EU", "NA", "OC", "SA"}
 }
