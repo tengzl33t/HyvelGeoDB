@@ -1,3 +1,15 @@
+/*
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+SPDX-License-Identifier: MPL-2.0
+
+File: helpers.go
+Description: Internal functions
+Author: tengzl33t
+*/
+
 package internal
 
 func GetDBStructs() map[string]DBStruct {
