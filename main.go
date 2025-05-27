@@ -7,7 +7,7 @@ import (
 	"encoding/csv"
 	"github.com/maxmind/mmdbwriter"
 	"github.com/maxmind/mmdbwriter/mmdbtype"
-	"github.com/oschwald/maxminddb-golang/v2"
+	"github.com/oschwald/maxminddb-golang"
 	"gitlab.com/yawning/gibloc"
 	"io"
 	"log"
@@ -256,12 +256,18 @@ func collectDBCountries(countryDBs map[string]internal.DBStruct) {
 
 			if DB.Type == "MMDB" {
 				reader := DB.Reader.(*maxminddb.Reader)
-				var gotCountry string
-				err := reader.Lookup(key.Addr()).DecodePath(&gotCountry, internal.GetInterfaceSlice(DB.CountrySearchPaths)...)
+				var gotData interface{}
+				_, ok, err := reader.LookupNetwork(firstNetIP, &gotData)
 				if err != nil {
 					panic(err.Error())
 				}
-				locationResult = gotCountry
+				if !ok {
+					continue
+				}
+				for _, path := range DB.CountrySearchPaths {
+					gotData = gotData.(map[string]interface{})[path]
+				}
+				locationResult = gotData.(string)
 			}
 			if DB.Type == "BIN" && DB.Name == "IPFire" {
 				reader := DB.Reader.(*gibloc.DB)
@@ -286,7 +292,6 @@ func collectDBCountries(countryDBs map[string]internal.DBStruct) {
 		newMap := mmdbtype.Map{}
 
 		for k, v := range countries[countryGeoID].Names {
-			println(k, v)
 			newMap[mmdbtype.String(k)] = mmdbtype.String(v)
 		}
 
