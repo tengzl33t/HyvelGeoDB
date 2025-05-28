@@ -16,18 +16,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: main
+          path: main
 
-      - name: Checkout DBs
-        run : |
-          git fetch origin sources --update-head-ok
-          git checkout sources -- sourcedbs
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: sources
+          path: sources
 
       - name: Validate config
-        run: "./hyvelgeodbgen-linux-amd64 sourcedbs/ ."
+        run: "./main/hyvelgeodbgen-linux-amd64 ./sources/sourcedbs/ ."
 
       - name: Commit changes
         run: |
+          cd ./sources/
           if [[ `git status --porcelain` ]]; then
             git config user.name "${{ github.actor }}"
             git config user.email "${{ github.actor }}@users.noreply.github.com"
