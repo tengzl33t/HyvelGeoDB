@@ -20,7 +20,8 @@ jobs:
 
       - name: Checkout DBs
         run : |
-          git checkout sources -- sourcedbs/
+          git fetch origin sources --update-head-ok
+          git checkout sources -- sourcedbs
 
       - name: Validate config
         run: "./hyvelgeodbgen-linux-amd64 sourcedbs/ ."
