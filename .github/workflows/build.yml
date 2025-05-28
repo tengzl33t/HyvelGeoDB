@@ -18,6 +18,7 @@ jobs:
 
       - name: Checkout DBs
         run : |
+          git fetch origin sources
           git checkout sources -- sourcedbs/
 
       - name: Validate config
