@@ -41,7 +41,7 @@ func GetDBStructs() map[string]DBStruct {
 			"MMDB",
 			emptyInterface,
 			[]string{"country_code"},
-			[]string{},
+			[]string{"asn"},
 		},
 		"IPLocate": {
 			"IPLocate",
@@ -50,7 +50,7 @@ func GetDBStructs() map[string]DBStruct {
 			"MMDB",
 			emptyInterface,
 			[]string{"country_code"},
-			[]string{},
+			[]string{"asn"},
 		},
 		"IP2Location": {
 			"IP2Location",
@@ -59,7 +59,7 @@ func GetDBStructs() map[string]DBStruct {
 			"MMDB",
 			emptyInterface,
 			[]string{"country", "iso_code"},
-			[]string{},
+			[]string{"autonomous_system_number"},
 		},
 		"DBIP": {
 			"DBIP",
@@ -68,11 +68,35 @@ func GetDBStructs() map[string]DBStruct {
 			"MMDB",
 			emptyInterface,
 			[]string{"country", "iso_code"},
-			[]string{},
+			[]string{"autonomous_system_number"},
 		},
 	}
 }
 
 func GetContinentCodes() []string {
 	return []string{"AF", "AN", "AS", "EU", "NA", "OC", "SA"}
+}
+
+func GetMaxInCountryMap(input map[string]int) string {
+	var maxValue int
+	var result string
+	for k, v := range input {
+		if v >= maxValue {
+			maxValue = v
+			result = k
+		}
+	}
+	return result
+}
+
+func GetMaxInASNMap(input map[int]int) int {
+	var maxValue int
+	var result int
+	for k, v := range input {
+		if v >= maxValue {
+			maxValue = v
+			result = k
+		}
+	}
+	return result
 }
