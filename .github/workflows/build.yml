@@ -16,9 +16,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get sourcedbs
-        run: |
-          git checkout sources sourcedbs/
+      - name: Checkout source DBs
+        uses: actions/checkout@v4
+        with:
+          ref: sources
+          sparse-checkout: "sourcedbs"
+          sparse-checkout-cone-mode: false
+          path: "."
 
       - name: Validate config
         run: "./hyvelgeodbgen-linux-amd64 sourcedbs/ ."
