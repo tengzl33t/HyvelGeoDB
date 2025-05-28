@@ -13,21 +13,12 @@ jobs:
   build-dbs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source DBs
-        uses: actions/checkout@v4
-        with:
-          ref: sources
-          sparse-checkout: "sourcedbs"
-          sparse-checkout-cone-mode: false
-          clean: false
-
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: main
-          sparse-checkout: "hyvelgeodbgen-linux-amd64"
-          sparse-checkout-cone-mode: false
-          clean: false
+
+      - name: Checkout DBs
+        run : |
+          git checkout sources -- sourcedbs/
 
       - name: Validate config
         run: "./hyvelgeodbgen-linux-amd64 sourcedbs/ ."
