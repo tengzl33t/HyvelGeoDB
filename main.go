@@ -28,7 +28,6 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func getLangLocations(langPaths []*zip.File) (map[int]mmdbtype.Map, map[string]int) {
@@ -281,12 +280,7 @@ func collectDBCountries(countryDBs map[string]internal.DBStruct, outputDirPath s
 	}
 }
 
-func timeTrack(start time.Time, name string) {
-	elapsed := time.Since(start)
-	log.Printf("%s took %s", name, elapsed)
-}
-
-func createMMDB(sourcesDirPath string, outputDirPath string) {
+func createMMDBs(sourcesDirPath string, outputDirPath string) {
 	countryDBs, asnDBs := internal.PrepareDBPaths(sourcesDirPath)
 	countryDBStreams := GetDBReadStreams(countryDBs)
 	collectDBCountries(countryDBStreams, outputDirPath)
@@ -296,6 +290,10 @@ func createMMDB(sourcesDirPath string, outputDirPath string) {
 }
 
 func main() {
-	defer timeTrack(time.Now(), "main")
-	createMMDB("sourcedbs/", "outputdbs/")
+	cmdArgs := os.Args[1:]
+	if len(cmdArgs) < 2 {
+		println("usage: main <sources directory> <output directory>")
+		os.Exit(1)
+	}
+	createMMDBs(cmdArgs[0], cmdArgs[1])
 }
