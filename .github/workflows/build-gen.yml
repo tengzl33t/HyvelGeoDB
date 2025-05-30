@@ -81,7 +81,7 @@ jobs:
     if: ${{ always() && !cancelled() }}
     steps:
       - run: |
-          result="${{ needs.test.result }}"
+          result="${{ needs.build.result }}"
           if [[ $result == "success" || $result == "skipped" ]]; then
             exit 0
           else
