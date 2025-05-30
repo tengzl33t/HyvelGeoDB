@@ -1,6 +1,7 @@
 name: Build Generator
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - generator
