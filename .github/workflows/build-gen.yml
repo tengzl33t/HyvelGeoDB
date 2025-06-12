@@ -26,8 +26,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           ref: generator
+          path: generator
 
       - name: Get changed files
         id: changed-files
@@ -35,10 +39,10 @@ jobs:
         with:
           matrix: true
           files: |
-            internal/**
-            **.mod
-            **.sum
-            **.go
+            generator/internal/**
+            generator/**.mod
+            generator/**.sum
+            generator/**.go
 
   build:
     name: Build
@@ -60,7 +64,7 @@ jobs:
         run: gofmt -l .
 
       - name: Build for amd64-linux
-        run: GOOS=linux GOARCH=amd64 go build -o hyvelgeodbgen-linux-amd64
+        run: GOPATH=./generator GOOS=linux GOARCH=amd64 go build -o hyvelgeodbgen-linux-amd64
 
       - name: Commit changes
         run: |
