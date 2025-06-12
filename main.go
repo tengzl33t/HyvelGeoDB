@@ -263,7 +263,7 @@ func collectDBCountries(countryDBs map[string]internal.DBStruct, outputDirPath s
 		gotCountry := internal.GetMaxInCountryMap(locationResults)
 		countryGeoID := countryMap[gotCountry]
 
-		err = writer.Insert(key, countries[countryGeoID])
+		err = writer.Insert(key, mmdbtype.Map{"country": countries[countryGeoID]})
 		if err != nil {
 			panic(err)
 		}
