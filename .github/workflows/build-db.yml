@@ -1,4 +1,4 @@
-name: Build DBs
+name: Build DB
 
 on:
   workflow_dispatch:
