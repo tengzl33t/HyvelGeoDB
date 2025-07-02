@@ -39,11 +39,11 @@ jobs:
 
       - name: Get IPLocate Country DB
         run: |
-          wget -qO- "https://www.iplocate.io/download/ip-to-country.mmdb?apikey=${{ secrets.IPLOCATE_KEY }}" | gzip > sourcedbs/IPLocate-Country.mmdb.gz
+          wget -qO- "https://github.com/iplocate/ip-address-databases/blob/main/ip-to-country/ip-to-country.mmdb" | gzip > sourcedbs/IPLocate-Country.mmdb.gz
 
       - name: Get IPLocate ASN DB
         run: |
-          wget -qO- "https://www.iplocate.io/download/ip-to-asn.mmdb?apikey=${{ secrets.IPLOCATE_KEY }}" | gzip > sourcedbs/IPLocate-ASN.mmdb.gz
+          wget -qO- "https://github.com/iplocate/ip-address-databases/blob/main/ip-to-asn/ip-to-asn.mmdb" | gzip > sourcedbs/IPLocate-ASN.mmdb.gz
 
       - name: Get GeoLite2 Country DB
         run: |
