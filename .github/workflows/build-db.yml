@@ -1,0 +1,38 @@
+name: Build DBs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 12 * * *
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  build-dbs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: sources
+          path: sources
+
+      - name: Build DBs
+        run: "./hyvelgeodbgen-linux-amd64 ./sources/sourcedbs/ ."
+
+      - name: Commit changes
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            git config user.name "${{ github.actor }}"
+            git config user.email "${{ github.actor }}@users.noreply.github.com"
+            git add HyvelGeoDB-ASN.mmdb HyvelGeoDB-Country.mmdb
+            git commit -a -m "build_$(date +"%Y.%m.%d")"
+            git push
+          else
+            echo "No changes were detected."
+          fi

@@ -1,0 +1,73 @@
+name: Get source DBs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 10 * * *
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  get-dbip-dbs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare directory
+        run: |
+          mkdir sourcedbs
+
+      - name: Get IP2Location Country DB
+        run: |
+          wget -qO "IP2LCountry.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DB1LITEMMDB"
+          unzip -jcq "IP2LCountry.zip" "IP2LOCATION-LITE-DB1.MMDB" | gzip > "sourcedbs/IP2Location-Country.MMDB.gz"
+          rm "IP2LCountry.zip"
+
+      - name: Get IP2Location ASN DB
+        run: |
+          wget -qO "IP2LASN.zip" "https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION_TOKEN }}&file=DBASNLITEMMDB"
+          unzip -jcq "IP2LASN.zip" "IP2LOCATION-LITE-ASN.MMDB" | gzip > "sourcedbs/IP2Location-ASN.MMDB.gz"
+          rm "IP2LASN.zip"
+
+      - name: Get IPFire DB
+        run: |
+          wget -qO- "https://location.ipfire.org/databases/1/location.db.xz" | xz -dc | gzip > "sourcedbs/IPFire.db.gz"
+
+      - name: Get IPInfo DB
+        run: |
+          wget -qO- "https://ipinfo.io/data/ipinfo_lite.mmdb?token=${{ secrets.IPINFO_TOKEN }}" | gzip > "sourcedbs/IPInfo.mmdb.gz"
+
+      - name: Get IPLocate Country DB
+        run: |
+          wget -qO- "https://www.iplocate.io/download/ip-to-country.mmdb?apikey=${{ secrets.IPLOCATE_KEY }}" | gzip > sourcedbs/IPLocate-Country.mmdb.gz
+
+      - name: Get IPLocate ASN DB
+        run: |
+          wget -qO- "https://www.iplocate.io/download/ip-to-asn.mmdb?apikey=${{ secrets.IPLOCATE_KEY }}" | gzip > sourcedbs/IPLocate-ASN.mmdb.gz
+
+      - name: Get GeoLite2 Country DB
+        run: |
+          wget -qO "sourcedbs/GeoLite2-Country.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+
+      - name: Get GeoLite2 ASN DB
+        run: |
+          wget -qO "sourcedbs/GeoLite2-ASN.zip" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.GEOLITE2DB_LICENSEKEY }}&suffix=zip"
+
+      - name: Get DBIP Country DB
+        run: |
+          wget -qO "sourcedbs/DBIP-Country.mmdb.gz" "https://download.db-ip.com/free/dbip-country-lite-$(date +"%Y-%m").mmdb.gz"
+
+      - name: Get DBIP ASN DB
+        run: |
+          wget -qO "sourcedbs/DBIP-ASN.mmdb.gz" "https://download.db-ip.com/free/dbip-asn-lite-$(date +"%Y-%m").mmdb.gz"
+
+      - name: Commit changes
+        run: |
+          cd sourcedbs
+          git init -b sources
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add .
+          git commit -a -m "update_$(date +"%Y.%m.%d")"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f origin sources
